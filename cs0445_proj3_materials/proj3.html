@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Project 3: Sudoku solving</title>
+	<meta name="description" content="It&#39;s me">
+
+	<link rel="stylesheet" href="/teaching/assets/main.css">
+	<link rel="canonical" href="/teaching/classes/cs0445/projects/proj3.html">
+	<link rel="shortcut icon" href="/teaching/assets/favicon.ico">
+
+
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body>
+    <header class="site-header" role="banner">
+	<h1>
+		
+			<a href=" /teaching/classes/cs0445/assignments">⬅</a>
+		
+		
+			Project 3: Sudoku solving
+		
+	</h1>
+
+	
+		<h3>
+			Due by midnight, Saturday, 11/10 (or late on Sunday)
+		</h3>
+	
+</header>
+
+
+
+    <main class="page-content" aria-label="Content">
+      
+<p class="good-important">Many many thanks to Dr. Garrison for this project description and starting code. THANK YOU BASED BILLIAM</p>
+
+<p>In this assignment, you will be implementing a <strong>backtracking</strong> algorithm to solve Sudoku puzzles. If you aren’t familiar (or even if you are and need a refresher), <a href="https://www.sudoku.name/rules/en" target="_blank">have a look at this site</a>.</p>
+
+<hr />
+
+<h2 id="starting-point">Starting point</h2>
+
+<p><a href="/teaching/classes/cs0445/projects/cs0445_proj3_materials.zip">Download and extract these materials.</a> Contained are:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Sudoku.java</code>, <strong>the file you will modify.</strong></li>
+  <li>5 <code class="highlighter-rouge">.su</code> files, which are <strong>plain text files</strong> containing Sudoku puzzles to solve.
+    <ul>
+      <li>Since they’re plain text files (like java files), you can open them in your text/code editor.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><code class="highlighter-rouge">Sudoku.java</code> contains the following:</p>
+
+<ul>
+  <li>a <code class="highlighter-rouge">main</code> method which can accept some command-line arguments.</li>
+  <li>the <code class="highlighter-rouge">readBoard</code> method, which reads a board from a file. <code class="highlighter-rouge">main</code> calls this.
+    <ul>
+      <li>“Unsolved” (empty) cells contain 0s.</li>
+    </ul>
+  </li>
+  <li>the <code class="highlighter-rouge">printBoard</code> method, which prints the board to the console, which will be very helpful.</li>
+  <li>the <code class="highlighter-rouge">solve</code> backtracking template method.</li>
+  <li>and finally, 8 “skeleton” methods for you to fill out.
+    <ul>
+      <li>you know, cause Halloween. 💀</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="testing">Testing</h2>
+
+<p><strong>We will be testing your code on the command line.</strong> You are welcome to use an IDE, but before submitting, please test that your Java files can be compiled and run on the command line without it.</p>
+
+<p>We should be able to run your program like so:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java Sudoku <span class="nt">-t</span>
+</code></pre></div></div>
+
+<p>to run all the test methods, or:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java Sudoku 2-easy.su
+</code></pre></div></div>
+
+<p>to load and solve a Sudoku board file.</p>
+
+<p>The <code class="highlighter-rouge">main</code> we gave you handles this command-line interface. But right now, nothing happens :)</p>
+
+<hr />
+
+<h2 id="your-task">Your task</h2>
+
+<p>This is a tough project. As such, <strong>60% of the grade is for correctness, and 40% is for the thoroughness of your testing methods.</strong></p>
+
+<p>You will implement four methods to solve the problem: <code class="highlighter-rouge">isFullSolution</code>, <code class="highlighter-rouge">reject</code>, <code class="highlighter-rouge">extend</code>, and <code class="highlighter-rouge">next</code>.</p>
+
+<p>To complement those four, there are four testing methods: <code class="highlighter-rouge">testIsFullSolution</code>, <code class="highlighter-rouge">testReject</code>, <code class="highlighter-rouge">testExtend</code>, and <code class="highlighter-rouge">testNext</code>. Each of these should make <strong>several tests</strong> of the corresponding solving methods.</p>
+
+<h3 id="the-puzzle-solving-algorithm">The puzzle-solving algorithm</h3>
+
+<p>By implementing the four solving methods, you will be constructing a backtracking solver program. Important points:</p>
+
+<ul>
+  <li>You must not change any of the original numbers already on the board.</li>
+  <li>You must implement all the Sudoku rules: each row, column, and 3x3 square may only contain each number once.</li>
+  <li>You only need to find <em>one</em> solution, not all solutions. Once you find a solution, you can stop.</li>
+  <li>If a board is not solvable, your program must say so.</li>
+</ul>
+
+<h3 id="the-puzzle-solving-methods">The puzzle-solving methods</h3>
+
+<p>These methods make up the four parts of the backtracking template. These methods are <strong>not recursive!</strong> Only the <code class="highlighter-rouge">solve</code> method is, and we already wrote that for you ;)</p>
+
+<ul>
+  <li><code class="highlighter-rouge">boolean isFullSolution(int[][] board)</code>
+    <ul>
+      <li>This takes a board as a 2D array, and returns <code class="highlighter-rouge">true</code> if it is complete (no empty cells) and satisfies all the rules.</li>
+      <li>If there are any empty cells, or if there are any rule violations, it returns false.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">boolean reject(int[][] board)</code>
+    <ul>
+      <li>This takes a <em>partial</em> solution, and returns <code class="highlighter-rouge">true</code> if it is <strong>impossible</strong> to continue with this board.</li>
+      <li>For example, if there are two 3’s on one row, there is no reason to keep solving this board.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">int[][] extend(int[][] board)</code>
+    <ul>
+      <li>This takes a <em>partial</em> solution, and constructs a <strong>new</strong> partial solution.
+        <ul>
+          <li>When I say “new” I mean use <code class="highlighter-rouge">new</code> to allocate a new 2D array!</li>
+        </ul>
+      </li>
+      <li>What I mean by “constructs a new partial solution” is it <strong>places a number into a previously-empty cell.</strong></li>
+      <li>If there are no more possible cells to place a number in, it should return <strong>null.</strong></li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">int[][] next(int[][] board)</code>
+    <ul>
+      <li>The partner to <code class="highlighter-rouge">extend</code>. This takes a <em>partial</em> solution, and constructs another <strong>new</strong> partial solution.</li>
+      <li>It will <strong>change the most-recently-placed number</strong> to the next possible option.
+        <ul>
+          <li>So if the most-recently-placed number was a 1, this would change it to a 2…</li>
+          <li>…or a 2 to a 3, or a 3 to a 4, and so on.</li>
+        </ul>
+      </li>
+      <li>If there are no options for the most-recently-placed number, it should return <strong>null.</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<p class="important"><strong>Do not write all the methods at once.</strong> Start with <code class="highlighter-rouge">isFullSolution</code> and <code class="highlighter-rouge">reject</code>. Test them extensively with your testing methods (by running your program with <code class="highlighter-rouge">java Sudoku -t</code>).</p>
+
+<h3 id="the-testing-methods">The testing methods</h3>
+
+<p>Re-read starting at Chapter 2.16 to review the concepts behind writing test methods. Write your testing methods <em>at the same time you write the solving methods.</em> Have a look at <a href="/teaching/classes/cs0445/examples/Ex18QueensBacktracking.java">this 8-Queens example</a> to see some example testing methods.</p>
+
+<p>For each of the testing methods, try to follow these guidelines:</p>
+
+<ul>
+  <li>Come up with a variety of partial solutions that will test all possible paths through your solving method.</li>
+  <li>Call the method with those partial solutions.</li>
+  <li>Check that the method actually returns what you expect it to return.</li>
+  <li>Print out the test cases and results, so that you can easily see if things are looking right.</li>
+  <li>Include enough test cases that you are convinced that your solving method is working properly.</li>
+</ul>
+
+<p>You can make new board files following the guidelines below, and then use <code class="highlighter-rouge">readBoard</code> to load them for testing.</p>
+
+<p>For example, if I were testing the <code class="highlighter-rouge">reject</code> method, I would give it…</p>
+
+<ul>
+  <li>a board with two of the same number in the same row.</li>
+  <li>a board with two of the same number in the same column.</li>
+  <li>a board with two of the same number in a 3x3 square.
+    <ul>
+      <li>(probably a few versions of that, to be thorough.)</li>
+    </ul>
+  </li>
+  <li>the boards we gave you (<code class="highlighter-rouge">1-trivial.su</code> etc.) to make sure it <em>doesn’t</em> reject those.</li>
+  <li>a solved board (look online for one) to make sure it <em>doesn’t</em> reject that.</li>
+</ul>
+
+<hr />
+
+<h2 id="example-boards">Example boards</h2>
+
+<p>We’ve included 5 example boards (the <code class="highlighter-rouge">.su</code> files). If you open them in your text editor, you will see they look something like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3__79425_
+2__56_197
+79_82_4_3
+_2__78_41
+57_1_6_82
+1483_2976
+9_7_856_4
+4526_7839
+_164397_5
+</code></pre></div></div>
+
+<p>There are 9 rows, and each has 9 columns. Any non-number character is treated as an empty (unsolved) cell.</p>
+
+<p>You can open one of the existing files and “File &gt; Save As…” to make your own boards. Make a bunch! It’s fine!</p>
+
+<hr />
+
+<h2 id="submission">Submission</h2>
+
+<p>You will submit a ZIP file named <code class="highlighter-rouge">username_proj3.zip</code> where <code class="highlighter-rouge">username</code> is your Pitt username.</p>
+
+<p><strong>Do not put a folder in the zip file, just the following file(s):</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">Sudoku.java</code></li>
+  <li>Any <em>extra</em> boards besides the ones we gave you</li>
+  <li>And if anything is wrong/not working, a plain text (.txt) file with notes to the grader about what is not working.</li>
+</ul>
+
+<p class="note-important">Do <strong>not</strong> submit any IDE project files.</p>
+
+<p><a href="https://pitt.box.com/s/uj6pq7yim8115vlk8px5tuk8vqd88n5l">Submit to the Box folder at this link.</a> Drag your zip file into your browser to upload. <strong>If you can see your file, you uploaded it correctly!</strong></p>
+
+<p>You can also re-upload if you made a mistake and need to fix it.</p>
+
+    </main>
+
+    <footer class="site-footer">
+	&copy; 2016-2019 Jarrett Billingsley
+</footer>
+
+<script>
+	// From https://gist.github.com/SimplGy/a229d25cdb19d7f21231
+	// Thanks Eric!
+	(function(){
+		'use strict';
+		var headingNodes = [], results, link,
+				tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
+
+		tags.forEach(function(tag){
+			results = document.getElementsByTagName(tag);
+			Array.prototype.push.apply(headingNodes, results);
+		});
+
+		headingNodes.forEach(function(node){
+			link = document.createElement('a');
+			link.className = 'section-link';
+			link.textContent = ' ¶';
+			link.href = '#' + node.getAttribute('id');
+			node.appendChild(link);
+		});
+	})();
+</script>
+  </body>
+</html>

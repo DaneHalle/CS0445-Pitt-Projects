@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Project 4: ADT Specification</title>
+	<meta name="description" content="It&#39;s me">
+
+	<link rel="stylesheet" href="/teaching/assets/main.css">
+	<link rel="canonical" href="/teaching/classes/cs0445/projects/proj4.html">
+	<link rel="shortcut icon" href="/teaching/assets/favicon.ico">
+
+
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body>
+    <header class="site-header" role="banner">
+	<h1>
+		
+			<a href=" /teaching/classes/cs0445/assignments">⬅</a>
+		
+		
+			Project 4: ADT Specification
+		
+	</h1>
+
+	
+		<h3>
+			Due by midnight, Saturday, 11/24 (or late on Sunday)
+		</h3>
+	
+</header>
+
+
+
+    <main class="page-content" aria-label="Content">
+      
+<p class="good-important">Many many thanks to Dr. Garrison for this project description and starting code. THANK YOU BASED BILLIAM</p>
+
+<p>Imagine that you are starting a streaming radio business. Partnerships have been established to provide you with audio content, and you will stream that content to users. You plan to use your knowledge of what songs your users like/dislike to make effective suggestions for new songs that they will like.</p>
+
+<p>In this assignment, you will be <strong>designing an abstract data type (ADT)</strong> that stores the service’s music library and users’ ratings of songs. This ADT represents a data structure that will be used by both client applications and for administrative uses (like adding new songs to the library).</p>
+
+<p>Once you complete this ADT, you could provide it to the programmers of the client applications, and they will be able to develop applications based on this specification - like you did in project 1.</p>
+
+<p>You could also distribute the ADT to the engineers in charge of <em>implementing</em> the functionality of the data structure. Then these two groups can work in parallel on their respective components, which can work together since they both follow the “contract” that your ADT provides.</p>
+
+<p class="important">You will not be implementing this data structure.</p>
+
+<p>You do not need to consider implementation-level details, since you are only writing the ADT. This means that you must specify the full set of details that a <strong>client needs to know</strong> in order to use the data structure, but <strong>not the details of how the operations will be carried out</strong> or how the data will be organized in memory. The implementation details should be left up to the implementers.</p>
+
+<hr />
+
+<h2 id="starting-point">Starting point</h2>
+
+<p><a href="/teaching/classes/cs0445/projects/cs0445_proj4_materials.zip">Download and extract these materials.</a> Contained are:</p>
+
+<ul>
+  <li>the <code class="highlighter-rouge">StreamingRadio</code> interface, <strong>the file you will modify.</strong></li>
+  <li><code class="highlighter-rouge">User</code>, <code class="highlighter-rouge">Song</code>, and <code class="highlighter-rouge">Station</code> are interfaces you can use for your your methods’ parameters and return types.
+    <ul>
+      <li><strong>You do not need to implement these!</strong> They’re just there for that reason.</li>
+      <li><strong>You do not need to assume any of their methods or add methods.</strong> Just use their names.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">doc/</code> is a directory containing the Javadoc output.
+    <ul>
+      <li>open <code class="highlighter-rouge">index.html</code> to view the docs.</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="your-task">Your task</h2>
+
+<p>You must write an abstract data type as a Java interface.</p>
+
+<p>We have given you the names of several abstract methods that the data structure would need to support. You must specify them in the Javadoc comments above each method.</p>
+
+<p>You should consider all possible corner cases in your specification, and describe what the class should do in all cases. A client that reads your ADT should know all the things that could go wrong, and how each will be handled.</p>
+
+<p>Error cases should be unambigous to the client, and they should always know which specific error was encountered. For some corner cases, you will need to make a design decision regarding the best way to handle them. You have the freedom to make these decisions any way you wish, as long as you are consistent, thorough, and clear in your descriptions.</p>
+
+<p>Remember that you document parameters by using the <code class="highlighter-rouge">@param name</code> command; return values with <code class="highlighter-rouge">@return</code>, and exceptions with <code class="highlighter-rouge">@throws name</code>.</p>
+
+<h3 id="the-methods">The methods</h3>
+
+<p>There are 8 methods. 1 has been done for you, as an example of the kind of specification we are looking for. So you must do the remaining 7. You will be adding parameters, return types, and exceptions to throw to each. Each one has a short description in <code class="highlighter-rouge">StreamingRadio.java</code>, so read those.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">addSong</code></li>
+  <li><code class="highlighter-rouge">removeSong</code></li>
+  <li><code class="highlighter-rouge">addToStation</code></li>
+  <li><code class="highlighter-rouge">removeFromStation</code></li>
+  <li><code class="highlighter-rouge">rateSong</code></li>
+  <li><code class="highlighter-rouge">clearRating</code>
+    <ul>
+      <li>we’ve specified this one for you.</li>
+      <li>you can change its specification, if you need to make it work better with your other methods.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">predictRating</code></li>
+  <li><code class="highlighter-rouge">suggestSong</code></li>
+</ul>
+
+<h3 id="notes">Notes</h3>
+
+<ul>
+  <li>You can assume that the set of users and the set of radio stations are fixed.
+    <ul>
+      <li>That way, you do not need to include operations to change these collections.</li>
+    </ul>
+  </li>
+  <li>When coming up with exceptions, you can use <a href="https://www.tutorialspoint.com/java/java_builtin_exceptions.htm">the standard Java exceptions</a> where they make sense.
+    <ul>
+      <li>If none of them fit, you are free to create your own exception classes.</li>
+      <li>Follow the template of the exception classes we gave in projects 1 and 3.</li>
+    </ul>
+  </li>
+  <li>Remember, <em>you are specifying the interface to the client.</em>
+    <ul>
+      <li>The implementors will <em>use</em> this interface, but they will come up with their own implementation.</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="testing">Testing</h2>
+
+<p>Well, you’re not writing any code, but you <em>are</em> writing documentation, and your interface <em>should</em> compile with <code class="highlighter-rouge">javac</code>. You won’t be able to run it, of course ;)</p>
+
+<p>Use this command to produce the HTML documentation:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javadoc -html5 -d doc *.java
+</code></pre></div></div>
+
+<p>If your documentation parses fine, it will produce a file in <code class="highlighter-rouge">doc/</code> named <code class="highlighter-rouge">index.html</code> which you can open to view it.</p>
+
+<p class="note-important">If you are using a version of Java older than 1.9, upgrade. If you can’t, use this command: <code class="highlighter-rouge">javadoc -d doc *.java</code></p>
+
+<hr />
+
+<h2 id="grading-rubric">Grading Rubric</h2>
+
+<ul>
+  <li><strong>[5]:</strong> Submission
+    <ul>
+      <li>Incorrectly submitted projects will lose all 5 points.</li>
+      <li>Please follow the submission directions carefully. There’s no reason not to.</li>
+      <li><em>It’s 5 free points, people.</em></li>
+    </ul>
+  </li>
+  <li><strong>[5]:</strong> compiles with <code class="highlighter-rouge">javac</code></li>
+  <li><strong>[10]:</strong> produces documentation with <code class="highlighter-rouge">javadoc</code></li>
+  <li><strong>[8]:</strong> <code class="highlighter-rouge">addSong</code></li>
+  <li><strong>[8]:</strong> <code class="highlighter-rouge">removeSong</code></li>
+  <li><strong>[12]:</strong> <code class="highlighter-rouge">addToStation</code></li>
+  <li><strong>[12]:</strong> <code class="highlighter-rouge">removeFromStation</code></li>
+  <li><strong>[12]:</strong> <code class="highlighter-rouge">rateSong</code></li>
+  <li><strong>[14]:</strong> <code class="highlighter-rouge">predictRating</code></li>
+  <li><strong>[14]:</strong> <code class="highlighter-rouge">suggestSong</code></li>
+</ul>
+
+<hr />
+
+<h2 id="submission">Submission</h2>
+
+<p>You will submit a ZIP file named <code class="highlighter-rouge">username_proj4.zip</code> where <code class="highlighter-rouge">username</code> is your Pitt username.</p>
+
+<p><strong>Do not put a folder in the zip file, just the following file(s):</strong></p>
+
+<ul>
+  <li>All the java files</li>
+  <li><strong>DO NOT include the doc/ directory</strong></li>
+</ul>
+
+<p class="note-important">Do <strong>not</strong> submit any IDE project files.</p>
+
+<p><a href="https://pitt.box.com/s/uj6pq7yim8115vlk8px5tuk8vqd88n5l">Submit to the Box folder at this link.</a> Drag your zip file into your browser to upload. <strong>If you can see your file, you uploaded it correctly!</strong></p>
+
+<p>You can also re-upload if you made a mistake and need to fix it.</p>
+
+    </main>
+
+    <footer class="site-footer">
+	&copy; 2016-2019 Jarrett Billingsley
+</footer>
+
+<script>
+	// From https://gist.github.com/SimplGy/a229d25cdb19d7f21231
+	// Thanks Eric!
+	(function(){
+		'use strict';
+		var headingNodes = [], results, link,
+				tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
+
+		tags.forEach(function(tag){
+			results = document.getElementsByTagName(tag);
+			Array.prototype.push.apply(headingNodes, results);
+		});
+
+		headingNodes.forEach(function(node){
+			link = document.createElement('a');
+			link.className = 'section-link';
+			link.textContent = ' ¶';
+			link.href = '#' + node.getAttribute('id');
+			node.appendChild(link);
+		});
+	})();
+</script>
+  </body>
+</html>

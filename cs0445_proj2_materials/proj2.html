@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Project 2: Expression evaluation</title>
+	<meta name="description" content="It&#39;s me">
+
+	<link rel="stylesheet" href="/teaching/assets/main.css">
+	<link rel="canonical" href="/teaching/classes/cs0445/projects/proj2.html">
+	<link rel="shortcut icon" href="/teaching/assets/favicon.ico">
+
+
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body>
+    <header class="site-header" role="banner">
+	<h1>
+		
+			<a href=" /teaching/classes/cs0445/assignments">⬅</a>
+		
+		
+			Project 2: Expression evaluation
+		
+	</h1>
+
+	
+		<h3>
+			Due by midnight, Wednesday 10/17 (or late Thursday)
+		</h3>
+	
+</header>
+
+
+
+    <main class="page-content" aria-label="Content">
+      
+<p>In this assignment, you’ll be implementing the “infix-to-postfix” and “postfix evaluation” algorithms simultaneously. You will then improve upon this by implementing error detection to give error messages about inputs, rather than just crashing.</p>
+
+<hr />
+
+<h2 id="starting-point">Starting point</h2>
+
+<p class="good-important">I hope project 1 taught you to <strong>never write an entire program before testing it.</strong> Right? Right?????? 😁</p>
+
+<p><a href="/teaching/classes/cs0445/projects/cs0445_proj2_materials.zip">Download and extract these materials.</a> Contained are:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">ArrayStack.java</code>, a stack implementation using an array.</li>
+  <li><code class="highlighter-rouge">StackInterface.java</code>, the interface <code class="highlighter-rouge">ArrayStack</code> implements.</li>
+  <li><code class="highlighter-rouge">ExpressionError.java</code>, an exception type.</li>
+  <li><code class="highlighter-rouge">InfixExpressionEvaluator.java</code>. <strong>This is the file you will modify.</strong></li>
+</ul>
+
+<p><em>Do not modify anything other than <code class="highlighter-rouge">InfixExpressionEvaluator.java</code>.</em> We will be testing it with unmodified versions of the other files.</p>
+
+<p><code class="highlighter-rouge">InfixExpressionEvaluator</code> contains a good bit of code already. <strong>You do not need to change any of the methods we wrote.</strong> Instead, you will be filling in the methods which implement the “meat” of the algorithm. Basically, search for <code class="highlighter-rouge">TODO:</code> and do those things.</p>
+
+<p>There is a <code class="highlighter-rouge">main</code> in <code class="highlighter-rouge">InfixExpressionEvaluator</code> so you can run it like <code class="highlighter-rouge">java InfixExpressionEvaluator</code>. It does nothing when you first download it, but it does run.</p>
+
+<hr />
+
+<h2 id="implementing-the-todo-methods-70-points">Implementing the TODO methods [70 points]</h2>
+
+<p class="aside">If you don’t have the book… ask your classmates.</p>
+
+<p>Check out sections <strong>5.16</strong> and <strong>5.18</strong> in the book (4th ed.). Those outline what you are doing. We already did the switch-case for you; the methods you implement are the code inside those cases.</p>
+
+<p>You’re going to “squish” those two algorithms into one. Rather than having an “output”, you will <strong>push the operands as you encounter them</strong> and <strong>evaluate the operators as you pop them.</strong> We’ve already given you two stacks to hold these things.</p>
+
+<p>Here are the methods you must fill in. They are all called by <code class="highlighter-rouge">evaluate()</code> as it finds tokens in the input.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">handleOperand(double)</code> - called when a number is encountered.
+    <ul>
+      <li>For example, <code class="highlighter-rouge">3</code>, <code class="highlighter-rouge">900</code>, <code class="highlighter-rouge">6.28</code> etc.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">handleName(String)</code> - called when a name is encountered.
+    <ul>
+      <li>A name is a special kind of <strong>operand.</strong></li>
+      <li>You must handle <code class="highlighter-rouge">pi</code> and <code class="highlighter-rouge">e</code>.
+        <ul>
+          <li>You can use the Java <code class="highlighter-rouge">Math.PI</code> and <code class="highlighter-rouge">Math.E</code> constants.</li>
+          <li><strong>Don’t duplicate effort!</strong> You already have a method to handle an operand.</li>
+        </ul>
+      </li>
+      <li>For any other name, throw an <code class="highlighter-rouge">ExpressionError</code> with a descriptive message.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">handleOperator(char)</code> - called when an operator is encountered.
+    <ul>
+      <li>
+        <p>You must handle the following operands:</p>
+
+        <table class="basic">
+          <thead>
+            <tr>
+              <th style="text-align: center">Symbol</th>
+              <th style="text-align: left">Operation</th>
+              <th style="text-align: left">Precedence</th>
+              <th style="text-align: left">Associativity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align: center"><code class="highlighter-rouge">+</code></td>
+              <td style="text-align: left">Addition</td>
+              <td style="text-align: left">Lowest</td>
+              <td style="text-align: left">Left</td>
+            </tr>
+            <tr>
+              <td style="text-align: center"><code class="highlighter-rouge">-</code></td>
+              <td style="text-align: left">Subtraction</td>
+              <td style="text-align: left">Lowest</td>
+              <td style="text-align: left">Left</td>
+            </tr>
+            <tr>
+              <td style="text-align: center"><code class="highlighter-rouge">*</code></td>
+              <td style="text-align: left">Multiplication</td>
+              <td style="text-align: left">Middle</td>
+              <td style="text-align: left">Left</td>
+            </tr>
+            <tr>
+              <td style="text-align: center"><code class="highlighter-rouge">/</code></td>
+              <td style="text-align: left">Division</td>
+              <td style="text-align: left">Middle</td>
+              <td style="text-align: left">Left</td>
+            </tr>
+            <tr>
+              <td style="text-align: center"><code class="highlighter-rouge">^</code></td>
+              <td style="text-align: left">Exponentiation</td>
+              <td style="text-align: left">Highest</td>
+              <td style="text-align: left">Right</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="important">Java has no exponentiation operator. You can type <code class="highlighter-rouge">a ^ b</code> in Java but it means something VERY different! Look it up. Use the <code class="highlighter-rouge">Math.pow()</code> method instead.</p>
+      </li>
+      <li>
+        <p>The <code class="highlighter-rouge">^</code> operator is handled a little differently from the rest. The code in section <strong>5.16</strong> shows this.</p>
+        <ul>
+          <li>Basically, right-associative operators are super easy to deal with.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">handleOpenBracket(char)</code> - called when an open bracket is encountered.
+    <ul>
+      <li>You must allow <code class="highlighter-rouge">(</code>, <code class="highlighter-rouge">{</code>, and <code class="highlighter-rouge">[</code>.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">handleCloseBracket(char)</code> - called when a close bracket is encountered.
+    <ul>
+      <li>You must allow <code class="highlighter-rouge">)</code>, <code class="highlighter-rouge">}</code>, and <code class="highlighter-rouge">]</code>.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">handleRemainingOperators()</code> - called at the end of parsing.
+    <ul>
+      <li>After all tokens have been parsed, this is called to allow you to evaluate any operators still on the stack.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>And last, you must fill in the return value of <code class="highlighter-rouge">evaluate()</code>. Right now it returns <code class="highlighter-rouge">null</code>. That’s bad. You want it to return the result of the expression evaluation.</p>
+
+<h3 id="example-inputsoutputs">Example inputs/outputs</h3>
+
+<p><a href="proj2_output.html">Here are examples.</a></p>
+
+<h3 id="suggestions">Suggestions</h3>
+
+<ul>
+  <li>Try just printing the arguments in each method at first.
+    <ul>
+      <li>That will give you an idea of what methods are called, and in what order.</li>
+    </ul>
+  </li>
+  <li>Then work on doing the infix-to-postfix algorithm.
+    <ul>
+      <li>You don’t have to do it “right” at first. Maybe just start by <em>printing</em> the output instead of evaluating.</li>
+      <li>Check it against examples that you know the output for.</li>
+      <li>Abstract your precedence-checking into a function like <code class="highlighter-rouge">boolean isLowerPrecedence(char a, char b)</code>.
+        <ul>
+          <li>That way, you can print out <code class="highlighter-rouge">isLowerPrecedence('+', '*')</code> and make sure it’s true, etc.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><em>Then</em> work on evaluation.
+    <ul>
+      <li>Getting it to evaluate instead of printing is honestly not a lot of code.</li>
+      <li>Start by testing it with simple cases like <code class="highlighter-rouge">3 + 4</code>. Don’t go for the gold at first.</li>
+    </ul>
+  </li>
+</ul>
+
+<p class="note-important">Finish this first section <em>before</em> moving onto error checking. Programs are like houses: you need a good foundation. Don’t skip steps if you run into trouble. It’s better to get a solid understanding of the algorithm and get a 70 than try to attempt everything, do poorly, and get a 50.</p>
+
+<hr />
+
+<h2 id="error-checking-30-points">Error checking [30 points]</h2>
+
+<p>Now, your program should be able to evaluate <em>correctly-formatted</em> expressions, but people make mistakes. Right now, your program might crash if you write something like <code class="highlighter-rouge">4 + </code>. That’s no good!</p>
+
+<p>Change your code to detect problems like this and throw <code class="highlighter-rouge">ExpressionError</code> with <strong>descriptive error messages.</strong> Try everything! Try giving your expression evaluator complete garbage and see what it does! <strong>It should never crash.</strong></p>
+
+<h3 id="hints">Hints</h3>
+
+<ul>
+  <li><strong>Some stack operations can throw an exception.</strong> Don’t let them.
+    <ul>
+      <li>Avoid these by checking if the stack is empty first, and throwing an <code class="highlighter-rouge">ExpressionError</code> instead.</li>
+    </ul>
+  </li>
+  <li><strong>Keep track of the “last seen token”.</strong>
+    <ul>
+      <li>You’ll have to add a variable to the class, and set it at the end of your <code class="highlighter-rouge">handle</code> methods.</li>
+      <li>Then whenever you handle a new token, you can make sure that it’s OK.</li>
+      <li>This will let you detect things like:
+        <ul>
+          <li>two operators in a row</li>
+          <li>two operands in a row</li>
+          <li>empty brackets</li>
+          <li>an operator right before or after a bracket</li>
+          <li>etc.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Be sure to test all possible bracket issues.</strong>
+    <ul>
+      <li>Missing open brackets…</li>
+      <li>Missing close brackets…</li>
+      <li>Mismatched brackets…</li>
+      <li>Think about <em>when</em> each of these things will occur.</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="extra-credit-10-points">Extra credit [+10 points]</h2>
+
+<p>You can earn <em>up to</em> 10 points of extra credit. <strong>If you do any extra credit, please follow the submission instructions for it below.</strong></p>
+
+<p>Here are some suggestions:</p>
+
+<ul>
+  <li>
+    <p>Support more names by allowing the user to define names on the command line, like:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  &gt; java InfixExpressionEvaluator beef=10
+  Enter infix expression: beef * 2
+  20.0
+</code></pre></div>    </div>
+
+    <ul>
+      <li>They should be able to define as many names as they want.</li>
+      <li>Look into <code class="highlighter-rouge">Map</code>.</li>
+    </ul>
+  </li>
+  <li>Detect semantic errors - errors in <em>meaning.</em>
+    <ul>
+      <li>Divide-by-zero?</li>
+      <li>Results that are too big to be represented (infinities)?</li>
+    </ul>
+  </li>
+  <li>Allow more features.
+    <ul>
+      <li>Hexadecimal numbers, like <code class="highlighter-rouge">0xDC04</code>?</li>
+      <li>More operators?
+        <ul>
+          <li>Check precedence/associativity tables for e.g. Java to get the right precedences.</li>
+        </ul>
+      </li>
+      <li>Trig functions, like <code class="highlighter-rouge">sin(pi)</code>?</li>
+      <li>Negation, like <code class="highlighter-rouge">-(4 * 5)</code>?</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="testing">Testing</h2>
+
+<p><strong>We will be testing your code on the command line.</strong> You are welcome to use an IDE, but before submitting, please test that your Java files can be compiled and run on the command line without it.</p>
+
+<p class="important"><strong>DO NOT TURN IN CODE THAT DOES NOT COMPILE.</strong></p>
+
+<p>This is not acceptable in this class or in your following classes. Comment out the code that doesn’t compile and put comments at the top of your Java files for the grader. You may receive some partial credit for such code.</p>
+
+<p>Code that crashes may also receive partial credit.</p>
+
+<hr />
+
+<h2 id="submission">Submission</h2>
+
+<p>You will submit a ZIP file named <code class="highlighter-rouge">username_proj2.zip</code> where <code class="highlighter-rouge">username</code> is your Pitt username.</p>
+
+<p><strong>Do not put a folder in the zip file, just the following file(s):</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">InfixExpressionEvaluator.java</code></li>
+  <li><strong>And if you did extra credit,</strong> please include a plain text (.txt) file named <code class="highlighter-rouge">readme.txt</code> that explains what you did for extra credit and how the grader should test it.</li>
+</ul>
+
+<p class="note-important">Do <strong>not</strong> submit any IDE project files.</p>
+
+<p><a href="https://pitt.box.com/s/uj6pq7yim8115vlk8px5tuk8vqd88n5l">Submit to the Box folder at this link.</a> Drag your zip file into your browser to upload. <strong>If you can see your file, you uploaded it correctly!</strong></p>
+
+<p>You can also re-upload if you made a mistake and need to fix it.</p>
+
+    </main>
+
+    <footer class="site-footer">
+	&copy; 2016-2019 Jarrett Billingsley
+</footer>
+
+<script>
+	// From https://gist.github.com/SimplGy/a229d25cdb19d7f21231
+	// Thanks Eric!
+	(function(){
+		'use strict';
+		var headingNodes = [], results, link,
+				tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
+
+		tags.forEach(function(tag){
+			results = document.getElementsByTagName(tag);
+			Array.prototype.push.apply(headingNodes, results);
+		});
+
+		headingNodes.forEach(function(node){
+			link = document.createElement('a');
+			link.className = 'section-link';
+			link.textContent = ' ¶';
+			link.href = '#' + node.getAttribute('id');
+			node.appendChild(link);
+		});
+	})();
+</script>
+  </body>
+</html>

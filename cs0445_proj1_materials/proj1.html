@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Project 1: Sets</title>
+	<meta name="description" content="It&#39;s me">
+
+	<link rel="stylesheet" href="/teaching/assets/main.css">
+	<link rel="canonical" href="/teaching/classes/cs0445/projects/proj1.html">
+	<link rel="shortcut icon" href="/teaching/assets/favicon.ico">
+
+
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body>
+    <header class="site-header" role="banner">
+	<h1>
+		
+			<a href=" /teaching/classes/cs0445/assignments">⬅</a>
+		
+		
+			Project 1: Sets
+		
+	</h1>
+
+	
+		<h3>
+			Due by midnight, Thursday 9/27 (or late Friday)
+		</h3>
+	
+</header>
+
+
+
+    <main class="page-content" aria-label="Content">
+      
+<p class="good-important">Please read the assignment carefully! Many questions we will receive are likely answered on this page.</p>
+
+<p>In this assignment, you are given two ADT interfaces, and you will implement them according to their specifications.</p>
+
+<hr />
+
+<h2 id="starting-point">Starting point</h2>
+
+<p><a href="/teaching/classes/cs0445/projects/cs0445_proj1_materials.zip">Download and extract these materials.</a> Contained are:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Driver.java</code>, the provided driver program.</li>
+  <li><code class="highlighter-rouge">Movie.java</code>, the things that will be held by a <code class="highlighter-rouge">MovieShelf</code></li>
+  <li><code class="highlighter-rouge">SetFullException.java</code>, an exception type</li>
+  <li><code class="highlighter-rouge">SetInterface.java</code> and <code class="highlighter-rouge">MovieShelfInterface.java</code>, interfaces which you will implement in…</li>
+  <li><code class="highlighter-rouge">Set.java</code> and <code class="highlighter-rouge">MovieShelf.java</code>. <strong>These are the files you will modify.</strong></li>
+</ul>
+
+<p>Do not modify anything other than <code class="highlighter-rouge">Set.java</code> and <code class="highlighter-rouge">MovieShelf.java</code>. We will be testing these with unmodified versions of the other files.</p>
+
+<p class="good-important">Organization is good. Make yourself a folder for this project if you haven’t already.</p>
+
+<hr />
+
+<p class="aside">See the grading rubric further down to see the breakdown of the points.</p>
+
+<h2 id="set-65-points"><code class="highlighter-rouge">Set</code> [65 points]</h2>
+
+<p>You will implement the <code class="highlighter-rouge">Set</code> class. It implements <code class="highlighter-rouge">SetInterface</code>. <strong>Read the doc comments for each method in <code class="highlighter-rouge">SetInterface</code> carefully.</strong> In addition to the interface methods, you will also need to make some constructors, as detailed below.</p>
+
+<p class="good-important"><strong>Never write an entire program before testing it.</strong> No one writes a correct program in one shot. Save often. Test early and test often. Read the sections of the textbook starting at <strong>Chapter 2.16.</strong></p>
+
+<h3 id="details-of-your-set-implementation">Details of your <code class="highlighter-rouge">Set</code> implementation</h3>
+
+<ul>
+  <li>It will store its data in an array.</li>
+  <li>It will be dynamic capacity (like we talked about in Lecture 3).</li>
+  <li>The <code class="highlighter-rouge">Set(int)</code> constructor will initialize the array to the given capacity.
+    <ul>
+      <li>It will check for an illegal capacity, and throw <code class="highlighter-rouge">IllegalArgumentException</code> in that case.</li>
+    </ul>
+  </li>
+  <li>The <code class="highlighter-rouge">Set()</code> constructor will initialize the array to a <em>reasonable default capacity.</em>
+    <ul>
+      <li>Reusing methods/constructors is a great habit! See section <strong>D.10</strong> of Carrano (page 877 in the 4th edition) for details.</li>
+    </ul>
+  </li>
+  <li>The <code class="highlighter-rouge">Set(E[])</code> constructor will initialize the set to contain the items in the array.
+    <ul>
+      <li>You <strong>will not</strong> make this array into the set’s backing array. That violates encapsulation.</li>
+      <li>The array may contain duplicates and <code class="highlighter-rouge">null</code>s. You should ignore these instead of throwing an exception.</li>
+      <li><strong>Do not duplicate your effort.</strong> This is essentially just adding all the items in the array to the set.</li>
+    </ul>
+  </li>
+  <li>Although you are given <code class="highlighter-rouge">SetFullException</code>, your <code class="highlighter-rouge">add</code> method will <em>never</em> actually throw it.
+    <ul>
+      <li>Since your implementation will dynamically resize its capacity, it can never be “full.”</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="movieshelf-30-points"><code class="highlighter-rouge">MovieShelf</code> [30 points]</h2>
+
+<p>You will implement the <code class="highlighter-rouge">MovieShelf</code> class. It implements <code class="highlighter-rouge">MovieShelfInterface</code>. Again, read the doc comments in that file carefully.</p>
+
+<p class="aside">You are writing code that <strong>uses your own code.</strong> We call this “eating our own dogfood”. It’s kind of a gross term, but hey.</p>
+
+<p><code class="highlighter-rouge">MovieShelf</code> is a <em>client</em> of your <code class="highlighter-rouge">Set</code>. That is, it will have an instance of <code class="highlighter-rouge">Set</code> and use it to hold its data. This means you are creating this class via <em>composition.</em></p>
+
+<h3 id="details-of-your-movieshelf-implementation">Details of your <code class="highlighter-rouge">MovieShelf</code> implementation</h3>
+
+<ul>
+  <li>It will store its data in a <code class="highlighter-rouge">Set&lt;Movie&gt;</code>.</li>
+  <li>The <code class="highlighter-rouge">MovieShelf()</code> constructor will initialize that <code class="highlighter-rouge">Set</code> to be empty.</li>
+  <li>The <code class="highlighter-rouge">MovieShelf(Movie[])</code> constructor will initialize that <code class="highlighter-rouge">Set</code> with that array of <code class="highlighter-rouge">Movie</code>s.</li>
+  <li>A note on <code class="highlighter-rouge">printAll()</code>: you can use <code class="highlighter-rouge">Set.toArray()</code> to get the movies to print, but it is an array of <code class="highlighter-rouge">Object</code>. You will have to cast each item to a <code class="highlighter-rouge">Movie</code> to access its movie-specific getters.</li>
+</ul>
+
+<hr />
+
+<h2 id="testing">Testing</h2>
+
+<p><strong>We will be testing your code on the command line.</strong> You are welcome to use an IDE, but before submitting, please test that your Java files can be compiled and run on the command line without it.</p>
+
+<p>You are given a simple driver program, <strong>but you should write your own driver as well</strong> to test your code more thoroughly. The driver provided does not test all the possible corner cases, and does not test <code class="highlighter-rouge">Set</code> directly.</p>
+
+<p><a href="proj1_output.html">Click here for an example of what the driver will output for a correct implementation.</a></p>
+
+<p class="important"><strong>DO NOT TURN IN CODE THAT DOES NOT COMPILE.</strong></p>
+
+<p>This is not acceptable in this class or in your following classes. Comment out the code that doesn’t compile and put comments at the top of your Java files for the grader. You may receive some partial credit for such code.</p>
+
+<p>Code that crashes may also receive partial credit.</p>
+
+<hr />
+
+<h2 id="grading-rubric">Grading Rubric</h2>
+
+<ul>
+  <li><strong>[5 points]:</strong> Submission
+    <ul>
+      <li>Incorrectly submitted projects will lose all 5 points.</li>
+      <li>Please follow the submission directions carefully. There’s no reason not to.</li>
+      <li><em>It’s 5 free points, people.</em></li>
+    </ul>
+  </li>
+  <li><strong>[65 points]:</strong> <code class="highlighter-rouge">Set</code>
+    <ul>
+      <li><strong>[4]:</strong> <code class="highlighter-rouge">Set()</code> constructor</li>
+      <li><strong>[4]:</strong> <code class="highlighter-rouge">Set(int)</code> constructor</li>
+      <li><strong>[9]:</strong> <code class="highlighter-rouge">Set(E[])</code> constructor</li>
+      <li><strong>[4]:</strong> <code class="highlighter-rouge">int getSize()</code></li>
+      <li><strong>[4]:</strong> <code class="highlighter-rouge">boolean isEmpty()</code></li>
+      <li><strong>[7]:</strong> <code class="highlighter-rouge">boolean add(E)</code></li>
+      <li><strong>[7]:</strong> <code class="highlighter-rouge">E remove(E)</code></li>
+      <li><strong>[6]:</strong> <code class="highlighter-rouge">E remove()</code></li>
+      <li><strong>[5]:</strong> <code class="highlighter-rouge">void clear()</code></li>
+      <li><strong>[6]:</strong> <code class="highlighter-rouge">boolean contains(E)</code></li>
+      <li><strong>[9]:</strong> <code class="highlighter-rouge">Object[] toArray()</code></li>
+    </ul>
+  </li>
+  <li><strong>[30 points]:</strong> <code class="highlighter-rouge">MovieShelf</code>
+    <ul>
+      <li><strong>[3]:</strong> <code class="highlighter-rouge">MovieShelf()</code> constructor</li>
+      <li><strong>[3]:</strong> <code class="highlighter-rouge">MovieShelf(Movie[])</code> constructor</li>
+      <li><strong>[3]:</strong> <code class="highlighter-rouge">addItem()</code></li>
+      <li><strong>[3]:</strong> <code class="highlighter-rouge">removeItem()</code></li>
+      <li><strong>[3]:</strong> <code class="highlighter-rouge">watchMovie()</code></li>
+      <li><strong>[6]:</strong> <code class="highlighter-rouge">printAll()</code></li>
+      <li><strong>[9]:</strong> <code class="highlighter-rouge">borrowMovie()</code></li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="submission">Submission</h2>
+
+<p class="aside">For example, I would name mine <code class="highlighter-rouge">jfb42_proj1.zip</code>.</p>
+
+<p>You will submit a ZIP file named <code class="highlighter-rouge">username_proj1.zip</code> where <code class="highlighter-rouge">username</code> is your Pitt username.</p>
+
+<p><strong>Do not put a folder in the zip file, just the following files:</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">Set.java</code></li>
+  <li><code class="highlighter-rouge">MovieShelf.java</code></li>
+  <li>Your custom driver Java file, if any</li>
+</ul>
+
+<p class="note-important">Do <strong>not</strong> submit any IDE project files.</p>
+
+<h3 id="creating-a-zip-file">Creating a ZIP file</h3>
+
+<p>If you’ve never created a ZIP file before, it’s easy to do in modern operating systems.</p>
+
+<ol>
+  <li>Select all the files you want to add to the ZIP file (the Java files listed above).</li>
+  <li><strong>Right click on the files,</strong> and…
+    <ul>
+      <li><strong>Windows:</strong> do <strong>Send To &gt; Compressed (zipped) folder</strong>. Then you can name it.</li>
+      <li><strong>macOS:</strong> do <strong>Compress <em>n</em> items</strong>. Then you can rename the <code class="highlighter-rouge">Archive.zip</code> file.</li>
+      <li><strong>Linux:</strong> haha who knows</li>
+    </ul>
+  </li>
+</ol>
+
+<p><a href="https://pitt.box.com/s/uj6pq7yim8115vlk8px5tuk8vqd88n5l">Submit to the Box folder at this link.</a> Drag your zip file into your browser to upload. <strong>If you can see your file, you uploaded it correctly!</strong></p>
+
+<p>You can also re-upload if you made a mistake and need to fix it.</p>
+
+    </main>
+
+    <footer class="site-footer">
+	&copy; 2016-2019 Jarrett Billingsley
+</footer>
+
+<script>
+	// From https://gist.github.com/SimplGy/a229d25cdb19d7f21231
+	// Thanks Eric!
+	(function(){
+		'use strict';
+		var headingNodes = [], results, link,
+				tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
+
+		tags.forEach(function(tag){
+			results = document.getElementsByTagName(tag);
+			Array.prototype.push.apply(headingNodes, results);
+		});
+
+		headingNodes.forEach(function(node){
+			link = document.createElement('a');
+			link.className = 'section-link';
+			link.textContent = ' ¶';
+			link.href = '#' + node.getAttribute('id');
+			node.appendChild(link);
+		});
+	})();
+</script>
+  </body>
+</html>

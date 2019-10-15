@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Project 5: Trees 🌴🌳🌲🎄</title>
+	<meta name="description" content="It&#39;s me">
+
+	<link rel="stylesheet" href="/teaching/assets/main.css">
+	<link rel="canonical" href="/teaching/classes/cs0445/projects/proj5.html">
+	<link rel="shortcut icon" href="/teaching/assets/favicon.ico">
+
+
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body>
+    <header class="site-header" role="banner">
+	<h1>
+		
+			<a href=" /teaching/classes/cs0445/assignments">⬅</a>
+		
+		
+			Project 5: Trees 🌴🌳🌲🎄
+		
+	</h1>
+
+	
+		<h3>
+			Due by midnight, Sunday 12/9 (or late on Monday)
+		</h3>
+	
+</header>
+
+
+
+    <main class="page-content" aria-label="Content">
+      
+<p><strong>The expressions return!!!</strong></p>
+
+<p>In this project, you will be dealing with a tree data structure that can represent <strong>mathematical expressions.</strong> Don’t worry, there’s no parsing this time, and the evaluation is far easier!</p>
+
+<hr />
+
+<h2 id="starting-point">Starting point</h2>
+
+<p><a href="/teaching/classes/cs0445/projects/cs0445_proj5_materials.zip">Download and extract these materials.</a> Contained are:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Expression.java</code>, <strong>the file you will modify.</strong></li>
+  <li><code class="highlighter-rouge">ExpressionError.java</code>, just an exception type.</li>
+  <li><code class="highlighter-rouge">Driver.java</code>, which is used to test <code class="highlighter-rouge">Expression</code>.
+    <ul>
+      <li>I’ve given you a starting point, but <strong>you should expand upon this and add more tests!</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<p>To compile and run, do:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javac *.java
+java Driver
+</code></pre></div></div>
+
+<p>You’ll see that it prints out a bunch of 0s and <code class="highlighter-rouge">&lt;not implemented&gt;</code>s. You need to fix that :)</p>
+
+<hr />
+
+<h2 id="expression-trees">Expression trees</h2>
+
+<p>Like I showed in class, trees come up a lot in representing languages, such as math and programming languages.</p>
+
+<p>The <code class="highlighter-rouge">Expression</code> class represents a <strong>node</strong> in an expression tree. Each instance of <code class="highlighter-rouge">Expression</code> can be one of three things:</p>
+
+<ul>
+  <li>a <strong>Number</strong>
+    <ul>
+      <li>in which case its <code class="highlighter-rouge">_value</code> is a string representation of the value.</li>
+      <li>you can use <code class="highlighter-rouge">getNumberValue()</code> to easily convert that string to a <code class="highlighter-rouge">double</code>.</li>
+    </ul>
+  </li>
+  <li>a <strong>Variable</strong> name
+    <ul>
+      <li>in which case its <code class="highlighter-rouge">_value</code> is the variable’s name.</li>
+    </ul>
+  </li>
+  <li>an <strong>Operator</strong>
+    <ul>
+      <li>in which case its <code class="highlighter-rouge">_value</code> is one of these operators: <code class="highlighter-rouge">"+", "-", "*", "/",</code> or <code class="highlighter-rouge">"^"</code></li>
+      <li>also, <strong><code class="highlighter-rouge">_left</code> and <code class="highlighter-rouge">_right</code> are its children</strong> - the operands to that operator.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>There are no “bracket” nodes; order of operations is entirely determined by the tree’s structure.</p>
+
+<p>Here are some examples of mathematical expressions and the trees which represent them:</p>
+
+<p><img src="/teaching/classes/cs0445/projects/proj5_exprtrees.png" alt="Tree 1: the expression &quot;10&quot; becomes a tree with a single node containing 10. Tree 2: the expression &quot;2 + 2&quot; becomes a tree whose root is a plus sign, and whose left and right children are nodes containing 2. Tree 3: the expression &quot;4 * x + 5&quot; becomes a tree whose root is a plus sign; whose left child is a multiplication (with 4 and x as children); and whose right child is 5. Tree 4: the expression &quot;4 * (x + 5)&quot; with parentheses around the addition becomes a tree whose root is a multiplication; whose left child is 4; and whose right child is a plus sign (with x and 5 as children)." /></p>
+
+<p>Compare the last two trees. You can think of parentheses as saying, “force this part of the expression to be a sub-tree.”</p>
+
+<hr />
+
+<h2 id="your-task">Your task</h2>
+
+<p>Open <code class="highlighter-rouge">Expression.java</code> and look through it. There are already some methods written, but there are several stubbed-out ones with <code class="highlighter-rouge">TODO</code> inside them.</p>
+
+<p>Each method gives you practice writing very common kinds of tree algorithms: <strong>visiting</strong> all the nodes in a tree; <strong>searching</strong> through a tree; creating a <strong>new tree</strong> which is a modification of an old one; and <strong>building a tree from scratch.</strong></p>
+
+<p class="good-important">The next section documents some methods I wrote for you that will be helpful in writing these.</p>
+
+<h3 id="string-tostring"><code class="highlighter-rouge">String toString()</code></h3>
+
+<ul>
+  <li>returns a human-readable <strong>infix</strong> string representation of this expression tree.</li>
+  <li><strong>for numbers:</strong> return the string representation of its value.</li>
+  <li><strong>for variables:</strong> return the variable name (the <code class="highlighter-rouge">_value</code> member).</li>
+  <li><strong>for operators:</strong> return a string of the form <code class="highlighter-rouge">"(left op right)"</code>, where:
+    <ul>
+      <li><code class="highlighter-rouge">left</code> is the string representation of the <code class="highlighter-rouge">_left</code> member</li>
+      <li><code class="highlighter-rouge">op</code> is this operator (the <code class="highlighter-rouge">_value</code> member)</li>
+      <li><code class="highlighter-rouge">right</code> is the string representation of the <code class="highlighter-rouge">_right</code> member</li>
+    </ul>
+  </li>
+  <li>the result will have lots of parentheses. that’s correct :)</li>
+</ul>
+
+<h3 id="string-topostfix"><code class="highlighter-rouge">String toPostfix()</code></h3>
+
+<ul>
+  <li>returns a human-readable <strong>postfix</strong> string representation of this expression tree.</li>
+  <li>this should be a very slight modification of <code class="highlighter-rouge">toString()</code>.</li>
+  <li><em>don’t forget to call <code class="highlighter-rouge">toPostfix()</code> recursively.</em></li>
+  <li>there should be no parentheses in the output.</li>
+</ul>
+
+<h3 id="double-evaluatemapstring-double-variables"><code class="highlighter-rouge">double evaluate(Map&lt;String, Double&gt; variables)</code></h3>
+
+<ul>
+  <li>given a set of variables, evaluate the expression tree and return the result.</li>
+  <li><strong>for numbers:</strong> return the numerical value of the node (<code class="highlighter-rouge">getNumberValue()</code>).</li>
+  <li><strong>for variables:</strong>
+    <ul>
+      <li>check if the variable’s name (<code class="highlighter-rouge">_value</code>) exists in the set of variables, using <code class="highlighter-rouge">variables.containsKey()</code></li>
+      <li>if not, throw an <code class="highlighter-rouge">ExpressionError</code> with a descriptive error message.</li>
+      <li>if so, return the value from <code class="highlighter-rouge">variables.get()</code>.</li>
+      <li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html" target="_blank">Here is the documentation for <code class="highlighter-rouge">Map</code></a>. You can find the docs for <code class="highlighter-rouge">containsKey()</code> and <code class="highlighter-rouge">get()</code> there.</li>
+    </ul>
+  </li>
+  <li><strong>for operators:</strong>
+    <ul>
+      <li>recursively evaluate the <code class="highlighter-rouge">_left</code> and <code class="highlighter-rouge">_right</code> children, using the same <code class="highlighter-rouge">variables</code> argument to them.</li>
+      <li>based on this operator (<code class="highlighter-rouge">_value</code>), perform the right calculation on those two values and return the result.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="expression-reciprocal"><code class="highlighter-rouge">Expression reciprocal()</code></h3>
+
+<ul>
+  <li>returns a <strong>completely new</strong> expression tree that is the reciprocal of this one.</li>
+  <li>you will not be making recursive calls to <code class="highlighter-rouge">reciprocal()</code>, but <strong>you should use <code class="highlighter-rouge">clone()</code> where appropriate.</strong></li>
+  <li>there are 3 cases:
+    <ul>
+      <li><strong>numbers:</strong> return a <strong>new</strong> number node whose value is the reciprocal.</li>
+      <li><strong>division:</strong> return a <strong>new</strong> division node whose children are cloned and swapped.</li>
+      <li><strong>everything else:</strong> return a <strong>new</strong> division node whose children are 1 and a clone of this.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="setstring-getvariables"><code class="highlighter-rouge">Set&lt;String&gt; getVariables()</code></h3>
+
+<ul>
+  <li>returns a set containing all the unique variable names which appear in the expression tree.</li>
+  <li>the code I gave already creates the <code class="highlighter-rouge">Set&lt;String&gt;</code> for you.
+    <ul>
+      <li>it has an <code class="highlighter-rouge">.add()</code> method that you can use to add Strings to it.</li>
+    </ul>
+  </li>
+  <li>you will have to write a <strong>private recursive method</strong> to actually find the variables, and have this call that one.
+    <ul>
+      <li>you will pass that <code class="highlighter-rouge">variables</code> set as an argument to it.</li>
+      <li>think about how each kind of node will change the set (if at all).</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="static-expression-geometricmeandouble-numbers"><code class="highlighter-rouge">static Expression geometricMean(double[] numbers)</code></h3>
+
+<p class="important">You may not use <code class="highlighter-rouge">quickParse()</code> to implement this method. Sorry ;)</p>
+
+<ul>
+  <li>creates an <code class="highlighter-rouge">Expression</code> that represents the <a href="https://www.mathsisfun.com/numbers/geometric-mean.html">geometric mean</a> of the array of numbers given as an argument.</li>
+  <li>the resulting <code class="highlighter-rouge">Expression</code> should be of the form:
+    <ul>
+      <li><code class="highlighter-rouge">(numbers[0] * numbers[1] * ... * numbers[n-1]) ^ (1 / n)</code></li>
+      <li>where <code class="highlighter-rouge">n</code> is the length of the array.</li>
+      <li>(it’s OK to assume that the array is always at least 1 item long.)</li>
+    </ul>
+  </li>
+  <li>use the <code class="highlighter-rouge">Number()</code>, <code class="highlighter-rouge">Operator()</code>, and <code class="highlighter-rouge">reciprocal()</code> methods to create the expression.</li>
+  <li>making the chain of multiplications can be done iteratively or recursively.
+    <ul>
+      <li>it’s a fun little puzzle :)</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="the-methods-i-wrote-for-you">The methods I wrote for you</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">Number(double)</code>
+    <ul>
+      <li>makes a new <code class="highlighter-rouge">Expression</code> node containing a number.</li>
+      <li>e.g. <code class="highlighter-rouge">Expression e = Number(3.1415);</code></li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">Variable(String)</code>
+    <ul>
+      <li>makes a new <code class="highlighter-rouge">Expression</code> node containing a variable name.</li>
+      <li>e.g. <code class="highlighter-rouge">Expression e = Variable("num_people");</code></li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">Operator(Expression, String, Expression)</code>
+    <ul>
+      <li>makes a new <code class="highlighter-rouge">Expression</code> node containing an operator, and which points to two children.</li>
+      <li>e.g. <code class="highlighter-rouge">Expression e = Operator(Number(4), "/", Number(5));</code> for the expression <code class="highlighter-rouge">4 / 5</code>.</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">quickParse(String)</code>
+    <ul>
+      <li>parses a string into a tree of <code class="highlighter-rouge">Expression</code> nodes. supports <code class="highlighter-rouge">+-*/^</code> and regular parentheses <code class="highlighter-rouge">()</code>.</li>
+      <li>e.g. <code class="highlighter-rouge">Expression complex = Expression.quickParse("1 / (5*x^2 + 3*x - 9)");</code></li>
+    </ul>
+
+    <p class="important"><code class="highlighter-rouge">quickParse</code> has very little error checking and will likely crash or give weird results with erroneous input. But it’s really there for testing purposes, so just give it valid expressions please :)</p>
+  </li>
+  <li><code class="highlighter-rouge">isOperator()</code>, <code class="highlighter-rouge">isNumber()</code>, <code class="highlighter-rouge">isVariable()</code>
+    <ul>
+      <li>return <code class="highlighter-rouge">boolean</code>s saying what type of node this is.</li>
+      <li>e.g. <code class="highlighter-rouge">if(expr.isOperator()) ... </code></li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">getNumberValue()</code>
+    <ul>
+      <li>for number nodes, parses the <code class="highlighter-rouge">_value</code> member into a <code class="highlighter-rouge">double</code>.</li>
+      <li>for operator and variable nodes, will probably crash. (that’s why it’s private.)</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">clone()</code>
+    <ul>
+      <li>makes a complete copy of an expression, recursively.</li>
+      <li><strong>have a look at how this method is implemented!</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="testing">Testing</h2>
+
+<p><code class="highlighter-rouge">Driver.java</code> has a small amount of code in it to test your <code class="highlighter-rouge">Expression</code> methods. However it does pretty minimal testing. Like it tells you, <strong>TEST MORE THOROUGHLY!!!</strong> Use <code class="highlighter-rouge">Expression.quickParse()</code> to easily create test cases.</p>
+
+<p>Here are the outputs I got from my implementation:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>toString:        (((4.0 * x) + (y / 9.0)) + 12.0)
+toPostfix:       4.0 x * y 9.0 / + 12.0 +
+evaluate:        55.0
+reciprocal:      (1.0 / (((4.0 * x) + (y / 9.0)) + 12.0))
+reciprocal(num): 0.14285714285714285
+reciprocal(div): (10.0 / x)
+getVariables:    [x, y]
+geometricMean:   (((((4.0 * 9.0) * 3.0) * 7.0) * 6.0) ^ 0.2)
+it evalutes to:  5.3868466094227525
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="extra-credit-10">Extra Credit [+10]</h2>
+
+<h3 id="string-tonicestring"><code class="highlighter-rouge">String toNiceString()</code></h3>
+
+<ul>
+  <li>Turns the expression into a nice string. ;)</li>
+  <li>This is like <code class="highlighter-rouge">toString()</code> but it will <strong>only put parentheses where needed.</strong></li>
+  <li>Hints:
+    <ul>
+      <li>Don’t forget to call <code class="highlighter-rouge">toNiceString()</code> recursively.</li>
+      <li>Decide whether to put parentheses around <em>each</em> of an operator’s <em>children.</em></li>
+      <li>Think about when you, as a human, need to put parentheses in an expression. What is the rule there? What does it have to do with?</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Done correctly, if you just have <code class="highlighter-rouge">toString()</code> call this method, the relevant lines of the above output would now look like:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>toString:        4.0 * x + y / 9.0 + 12.0
+reciprocal:      1.0 / (4.0 * x + y / 9.0 + 12.0)
+reciprocal(div): 10.0 / x
+geometricMean:   (4.0 * 9.0 * 3.0 * 7.0 * 6.0) ^ 0.2
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="grading-rubric">Grading Rubric</h2>
+
+<ul>
+  <li><strong>[5]:</strong> Submission
+    <ul>
+      <li>Incorrectly submitted projects will lose all 5 points.</li>
+      <li>Please follow the submission directions carefully. There’s no reason not to.</li>
+      <li><em>It’s 5 free points, people.</em></li>
+    </ul>
+  </li>
+  <li><strong>[15]:</strong> <code class="highlighter-rouge">toString()</code></li>
+  <li><strong>[10]:</strong> <code class="highlighter-rouge">toPostfix()</code></li>
+  <li><strong>[25]:</strong> <code class="highlighter-rouge">evaluate()</code></li>
+  <li><strong>[15]:</strong> <code class="highlighter-rouge">reciprocal()</code></li>
+  <li><strong>[15]:</strong> <code class="highlighter-rouge">getVariables()</code></li>
+  <li><strong>[15]:</strong> <code class="highlighter-rouge">geometricMean()</code></li>
+  <li><strong>[+10]:</strong> <code class="highlighter-rouge">toNiceString()</code></li>
+</ul>
+
+<hr />
+
+<h2 id="submission">Submission</h2>
+
+<p>You will submit a ZIP file named <code class="highlighter-rouge">username_proj5.zip</code> where <code class="highlighter-rouge">username</code> is your Pitt username.</p>
+
+<p><strong>Do not put a folder in the zip file, just the following file(s):</strong></p>
+
+<ul>
+  <li>All the <code class="highlighter-rouge">.java</code> files
+    <ul>
+      <li>Including any changes you made to <code class="highlighter-rouge">Driver.java</code></li>
+    </ul>
+  </li>
+  <li><strong>If you did the extra credit, please also add a file named EC.txt</strong>
+    <ul>
+      <li>It can be an empty file</li>
+      <li>It’s just there to let the grader know you did it</li>
+    </ul>
+  </li>
+</ul>
+
+<p class="note-important">Do <strong>not</strong> submit any IDE project files.</p>
+
+<p><a href="https://pitt.box.com/s/uj6pq7yim8115vlk8px5tuk8vqd88n5l">Submit to the Box folder at this link.</a> Drag your zip file into your browser to upload. <strong>If you can see your file, you uploaded it correctly!</strong></p>
+
+<p>You can also re-upload if you made a mistake and need to fix it.</p>
+
+    </main>
+
+    <footer class="site-footer">
+	&copy; 2016-2019 Jarrett Billingsley
+</footer>
+
+<script>
+	// From https://gist.github.com/SimplGy/a229d25cdb19d7f21231
+	// Thanks Eric!
+	(function(){
+		'use strict';
+		var headingNodes = [], results, link,
+				tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
+
+		tags.forEach(function(tag){
+			results = document.getElementsByTagName(tag);
+			Array.prototype.push.apply(headingNodes, results);
+		});
+
+		headingNodes.forEach(function(node){
+			link = document.createElement('a');
+			link.className = 'section-link';
+			link.textContent = ' ¶';
+			link.href = '#' + node.getAttribute('id');
+			node.appendChild(link);
+		});
+	})();
+</script>
+  </body>
+</html>
